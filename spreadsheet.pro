@@ -15,16 +15,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES +=                    \
-    app/application.cpp       \
-    main.cpp                  \
-    mainwindow/mainwindow.cpp
+SOURCES +=                               \
+    app/application.cpp                  \
+    find_dialog/finddialog.cpp           \
+    go_to_cell_dialog/gotocelldialog.cpp \
+    main.cpp                             \
+    mainwindow/mainwindow.cpp            \
+    sort_dialog/sortdialog.cpp           \
+    spreadsheet/spreadsheet.cpp
 
-HEADERS +=                    \
-    app/application.h         \
-    mainwindow/mainwindow.h
+HEADERS +=                               \
+    app/application.h                    \
+    find_dialog/finddialog.hpp           \
+    go_to_cell_dialog/gotocelldialog.h   \
+    mainwindow/mainwindow.h              \
+    sort_dialog/sortdialog.h             \
+    spreadsheet/spreadsheet.hpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+FORMS +=                                \
+    go_to_cell_dialog/gotocelldialog.ui \
+    sort_dialog/SortDialog.ui
