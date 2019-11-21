@@ -1,3 +1,5 @@
+#include <QIcon>
+
 #include "./mainwindow.h"
 #include "./find_dialog/finddialog.hpp"
 #include "./go_to_cell_dialog/gotocelldialog.h"
@@ -7,7 +9,18 @@ namespace spr_sht {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-{ }
+{
+	createActions();
+	createMenus();
+	createContextMenu();
+	createToolBars();
+	createStatusBar();
+
+	readSettings();
+
+	setWindowIcon(QIcon(":/images/icon"));
+	setCurrentFile("");
+}
 
 MainWindow::~MainWindow() = default;
 

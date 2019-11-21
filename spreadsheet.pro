@@ -40,3 +40,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 FORMS +=                                \
     go_to_cell_dialog/gotocelldialog.ui \
     sort_dialog/SortDialog.ui
+
+RESOURCES += \
+    resources.qrc
