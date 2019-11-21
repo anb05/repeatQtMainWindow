@@ -3,7 +3,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 
-namespace ui_dlg {
+namespace spr_sht {
     
     GoToCellDialog::GoToCellDialog(QWidget* parent)
         : QDialog(parent)
@@ -36,5 +36,5 @@ namespace ui_dlg {
                 this, &GoToCellDialog::onLineEdtTxtChanged);
     }
 
-} // namespace ui_dlg
+} // namespace spr_sht
 

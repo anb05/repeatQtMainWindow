@@ -8,7 +8,7 @@ class QLineEdit;
 class QCheckBox;
 class QPushButton;
 
-namespace forms {
+namespace spr_sht {
 
 class FindDialog : public QDialog
 {
@@ -44,5 +44,5 @@ private slots:
     void enableFindButton(const QString& text);
 };
 
-} // namespace forms
+} // namespace spr_sht
 #endif // FIND_DIALOG_HPP

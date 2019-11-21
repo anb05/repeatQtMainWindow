@@ -6,7 +6,7 @@
 #include <QPushButton>
 #include <QBoxLayout>
 
-namespace forms {
+namespace spr_sht {
 
 FindDialog::FindDialog(QWidget *parent)
     : QDialog(parent)
@@ -102,4 +102,4 @@ void FindDialog::enableFindButton(const QString &text)
     _pBtnFind->setEnabled(!text.isEmpty());
 }
 
-} // namespace forms
+} // namespace spt_sht

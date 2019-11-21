@@ -77,7 +77,7 @@ private:
 	QToolBar*    _pEditToolBar        {nullptr};
 	enum {MAX_RECENT_FILES = 5};
 	QAction*     _aRecentFileActions[MAX_RECENT_FILES]; //
-    QAction*     _pSeparatorAction    {nullptr};
+	QAction*     _pSeparatorAction    {nullptr}; //
 	QAction*     _pNewAction          {nullptr}; //
 	QAction*     _pOpenAction         {nullptr}; //
 	QAction*     _pSaveAction         {nullptr}; //

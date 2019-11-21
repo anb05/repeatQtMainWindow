@@ -1,8 +1,13 @@
 #include <QIcon>
 #include <QMenu>
 #include <QMenuBar>
+#include <QToolBar>
 #include <QAction>
+#include <QFileInfo>
+#include <QStatusBar>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QCloseEvent>
 #include <QKeySequence>
 
 #include "./mainwindow.h"
@@ -37,10 +42,23 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() = default;
 
 void MainWindow::closeEvent(QCloseEvent *event)
-{  }
+{
+	if (okToContinue()) {
+		writeSettings();
+		event->accept();
+	}
+	else {
+		event->ignore();
+	}
+}
 
 void MainWindow::newFile()
-{  }
+{
+	if (okToContinue()) {
+		_pSpreadsheet->clear();
+		setCurrentFile("");
+	}
+}
 
 void MainWindow::open()
 {
@@ -86,37 +104,50 @@ bool MainWindow::saveAs()
 
 void MainWindow::find()
 {
-
+	if (!_pFindDialog) {
+		_pFindDialog = new FindDialog(this);
+	}
+	_pFindDialog->show();
+	_pFindDialog->raise();
+	_pFindDialog->activateWindow();
 }
 
 void MainWindow::goToCell()
 {
-
+	GoToCellDialog dialog(this);
+	if (dialog.exec()) {
+		QString str = dialog._edt->text().toUpper();
+		_pSpreadsheet->setCurrentCell(str.mid(1).toInt() - 1,
+									  str[0].unicode() - 'A');
+	}
 }
 
 void MainWindow::sort()
-{
-
-}
+{  }
 
 void MainWindow::about()
-{
-
-}
+{  }
 
 void MainWindow::openRecentFile()
 {
-
+	if (okToContinue()) {
+		QAction* act = qobject_cast<QAction*>(sender());
+		if (act != nullptr) {
+			loadFile(act->data().toString());
+		}
+	}
 }
 
 void MainWindow::updateStatusBar()
 {
-
+	_pLocationLbl->setText(_pSpreadsheet->currentLocation());
+	_pFormulaLbl->setText(_pSpreadsheet->currentFormula());
 }
 
 void MainWindow::spreadsheetModified()
 {
-
+	setWindowModified(true);
+	updateStatusBar();
 }
 
 void MainWindow::createActions()
@@ -296,61 +327,160 @@ void MainWindow::createMenus()
 		pMenu->addAction(_pGoToCellAction);
 
 	}
+	{
+		_pToolsMenu = pMenu = menuBar()->addMenu(tr("&Tools"));
+		pMenu->addAction(_pRecalculateAction);
+		pMenu->addAction(_pSortAction);
+	}
+	{
+		_pOptionsMenu = pMenu = menuBar()->addMenu(tr("&Options"));
+		pMenu->addAction(_pShowGridAction);
+		pMenu->addAction(_pAutoRecalcAction);
+	}
+	menuBar()->addSeparator();
+	{
+		_pHelpMenu = pMenu = menuBar()->addMenu(tr("&Help"));
+		pMenu->addAction(_pAboutAction);
+		pMenu->addAction(_pAboutQtAction);
+	}
 }
 
 void MainWindow::createContextMenu()
 {
+	_pSpreadsheet->addAction(_pCutAction);
+	_pSpreadsheet->addAction(_pCopyAction);
+	_pSpreadsheet->addAction(_pPasteAction);
 
+	_pSpreadsheet->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void MainWindow::createToolBars()
 {
-
+	QToolBar* pToolBar {nullptr};
+	{
+		_pFileToolBar = pToolBar = addToolBar(tr("&File"));
+		pToolBar->addAction(_pNewAction);
+		pToolBar->addAction(_pOpenAction);
+		pToolBar->addAction(_pSaveAction);
+	}
+	{
+		_pEditToolBar = pToolBar = addToolBar(tr("&Edit"));
+		pToolBar->addAction(_pCutAction);
+		pToolBar->addAction(_pCopyAction);
+		pToolBar->addAction(_pPasteAction);
+		pToolBar->addSeparator();
+		pToolBar->addAction(_pFindAction);
+		pToolBar->addAction(_pGoToCellAction);
+	}
 }
 
 void MainWindow::createStatusBar()
 {
-
+	QLabel* pLbl {nullptr};
+	{
+		_pLocationLbl = pLbl = new QLabel(this);
+		pLbl->setText(" W999 ");
+		pLbl->setAlignment(Qt::AlignCenter);
+		pLbl->setMinimumSize(pLbl->sizeHint());
+		statusBar()->addWidget(pLbl);
+	}
+	{
+		_pFormulaLbl = pLbl = new QLabel(this);
+		pLbl->setIndent(3);
+		pLbl->setAlignment(Qt::AlignLeft);
+		statusBar()->addWidget(pLbl, 1);
+	}
+	updateStatusBar();
 }
 
 void MainWindow::readSettings()
-{
-
-}
+{  }
 
 void MainWindow::writeSettings()
-{
-
-}
+{  }
 
 bool MainWindow::okToContinue()
 {
-
+	if (isWindowModified()) {
+		int r = QMessageBox::warning(
+					this,
+					tr("Spreadsheet"),
+					tr("The document has been modified.\n"
+					   "Do you want to save your changes?"),
+					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+					);
+		if (QMessageBox::Yes == r) {
+			return save();
+		}
+		else if (QMessageBox::Cancel == r) {
+			return false;
+		}
+	}
+	return true;
 }
 
 bool MainWindow::loadFile(const QString &fileName)
 {
-
+	if (!_pSpreadsheet->readFile(fileName)) {
+		statusBar()->showMessage(tr("Loading canceled"), 2000);
+		return false;
+	}
+	setCurrentFile(fileName);
+	statusBar()->showMessage(tr("File loaded"), 2000);
+	return true;
 }
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-
+	if (!_pSpreadsheet->writeFile(fileName)) {
+		statusBar()->showMessage(tr("Saving canceled"), 2000);
+		return false;
+	}
+	setCurrentFile(fileName);
+	statusBar()->showMessage(tr("File saved"));
+	return true;
 }
 
 void MainWindow::setCurrentFile(const QString &fileName)
 {
+	_curFile = fileName;
+	setWindowModified(false);
 
+	QString shownName {"Untitled"};
+	if (!_curFile.isEmpty()) {
+		shownName = strippedName(_curFile);
+		_recentFiles.removeAll(_curFile);
+		_recentFiles.prepend(_curFile);
+		updateRecentFileActions();
+	}
+	setWindowTitle(tr("%1[*]-%2").arg(shownName).arg(tr("Spreadsheet")));
 }
 
 void MainWindow::updateRecentFileActions()
 {
-
+	QMutableStringListIterator i(_recentFiles);
+	while (i.hasNext()) {
+		if (!QFile::exists(i.next())) {
+			i.remove();
+		}
+	}
+	for (int j = 0; j < MAX_RECENT_FILES; ++j) {
+		if (j < _recentFiles.count()) {
+			QString text = tr("&%1 %2").arg(j + 1).arg(strippedName(_recentFiles[j]));
+			_aRecentFileActions[j]->setText(text);
+			_aRecentFileActions[j]->setData(_recentFiles[j]);
+			_aRecentFileActions[j]->setVisible(true);
+		}
+		else {
+			_aRecentFileActions[j]->setVisible(false);
+		}
+	}
+	_pSeparatorAction->setVisible(!_recentFiles.isEmpty());
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)
 {
-
+	return QFileInfo(fullFileName).fileName();
 }
 
 void MainWindow::connections()
@@ -414,6 +544,18 @@ void MainWindow::connections()
 
 	connect(_pAboutAction, &QAction::triggered,
 			this,          &MainWindow::about);
+
+	connect(_pSpreadsheet, SIGNAL(currentCellChanged(int, int, int, int)),
+			this,          SLOT(updateStatusBar()));
+
+	connect(_pSpreadsheet, SIGNAL(modified()),
+			this,          SLOT(preadsheetModified()));
+
+	connect(_pFindDialog,  &FindDialog::findNext,
+			_pSpreadsheet, &Spreadsheet::findNext);
+
+	connect(_pFindDialog,  &FindDialog::findNext,
+			_pSpreadsheet, &Spreadsheet::findPrevious);
 }
 
 } // namespace spr_sht

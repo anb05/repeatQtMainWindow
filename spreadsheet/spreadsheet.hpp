@@ -1,6 +1,7 @@
 #ifndef SPREADSHEET_HPP
 #define SPREADSHEET_HPP
 
+#include <QString>
 #include <QTableWidget>
 
 namespace spr_sht {
@@ -17,6 +18,12 @@ public:
 	Spreadsheet& operator= (const Spreadsheet& ) = delete ;
 	Spreadsheet& operator= (Spreadsheet&& )      = delete ;
 
+public:
+	const QString& currentLocation() {return _currentLocation;}
+	const QString& currentFormula()  {return _currentFormula;}
+	bool  readFile(const QString& fileName) {return true;}
+	bool  writeFile(const QString& fileName) {return true;}
+
 public slots:
 	bool autoRecalculate() {return true;}
 	void setAutoRecalculate(bool b) {Q_UNUSED(b)}
@@ -27,6 +34,16 @@ public slots:
 	void selectCurrentRow(bool checked) {Q_UNUSED(checked)}
 	void selectCurrentColumn(bool checked) {Q_UNUSED(checked)}
 	void recalculate(bool checked) {Q_UNUSED(checked)}
+	void findNext(const QString& str, Qt::CaseSensitivity cs) {}
+	void findPrevious(const QString& str, Qt::CaseSensitivity cs) {}
+
+signals:
+	void currentCellChanged(int, int, int, int);
+	void modified();
+
+private:
+	QString _currentLocation {};
+	QString _currentFormula {};
 };
 
 } // namespace spr_sht

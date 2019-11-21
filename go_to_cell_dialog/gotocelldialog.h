@@ -5,7 +5,7 @@
 
 #include "ui_gotocelldialog.h"
 
-namespace ui_dlg {
+namespace spr_sht {
 
     class GoToCellDialog : public QDialog, public Ui::GoToCellDialog
     {
@@ -28,7 +28,7 @@ namespace ui_dlg {
         void connections();
     };
 
-} // namespace ui_dlg
+} // namespace spr_sht
 
 #endif // GOTOCELLDIALOG_H
 
