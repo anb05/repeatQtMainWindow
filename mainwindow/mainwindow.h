@@ -5,8 +5,11 @@
 
 class QAction;
 class QLabel;
+
+namespace spr_sht {
 class FindDialog;
 class Spreadsheet;
+} // namespace spt_sht
 
 namespace spr_sht {
 

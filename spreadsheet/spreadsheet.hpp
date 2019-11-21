@@ -11,11 +11,11 @@ public:
     explicit Spreadsheet(QWidget* parent = nullptr);
     ~Spreadsheet() override;
 
-    explicit Spreadsheet(const Spreadsheet& )    = delete ;
-    explicit Spreadsheet(Spreadsheet&& )         = delete ;
+	explicit Spreadsheet(const Spreadsheet& )    = delete ;
+	explicit Spreadsheet(Spreadsheet&& )         = delete ;
 
-    Spreadsheet& operator= (const Spreadsheet& ) = delete ;
-    Spreadsheet& operator= (Spreadsheet&& )      = delete ;
+	Spreadsheet& operator= (const Spreadsheet& ) = delete ;
+	Spreadsheet& operator= (Spreadsheet&& )      = delete ;
 };
 
 } // namespace spr_sht

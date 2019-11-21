@@ -1,15 +1,19 @@
 #include <QIcon>
 
 #include "./mainwindow.h"
-#include "./find_dialog/finddialog.hpp"
-#include "./go_to_cell_dialog/gotocelldialog.h"
-#include "./sort_dialog/sortdialog.h"
+#include "../find_dialog/finddialog.hpp"
+#include "../go_to_cell_dialog/gotocelldialog.h"
+#include "../sort_dialog/sortdialog.h"
+#include "../spreadsheet/spreadsheet.hpp"
 
 namespace spr_sht {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+	, _pSpreadsheet {new Spreadsheet}
 {
+	setCentralWidget(_pSpreadsheet);
+
 	createActions();
 	createMenus();
 	createContextMenu();
