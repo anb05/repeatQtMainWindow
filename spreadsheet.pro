@@ -22,6 +22,7 @@ SOURCES +=                               \
     main.cpp                             \
     mainwindow/mainwindow.cpp            \
     sort_dialog/sortdialog.cpp           \
+    spreadsheet/cell.cpp \
     spreadsheet/spreadsheet.cpp
 
 HEADERS +=                               \
@@ -30,6 +31,7 @@ HEADERS +=                               \
     go_to_cell_dialog/gotocelldialog.h   \
     mainwindow/mainwindow.h              \
     sort_dialog/sortdialog.h             \
+    spreadsheet/cell.h \
     spreadsheet/spreadsheet.hpp
 
 # Default rules for deployment.

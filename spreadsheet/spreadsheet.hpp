@@ -5,9 +5,16 @@
 #include <QTableWidget>
 
 namespace spr_sht {
+class Cell;
+class SpreadsheetCompare;
+} // namespace spr_sht
+
+namespace spr_sht {
 
 class Spreadsheet : public QTableWidget
 {
+	Q_OBJECT
+
 public:
     explicit Spreadsheet(QWidget* parent = nullptr);
     ~Spreadsheet() override;
@@ -45,6 +52,15 @@ signals:
 	void modified();
 
 private:
+	enum {MAGIC_NUMBER = 0x7f51c883, ROW_COUNT = 999, COLUMN_COUNT = 26};
+	Cell*   cell(int row, int column) const;
+	QString text(int row, int column) const;
+	QString formula(int row, int column) const;
+	void    setFormula(int row, int column, const QString& formula);
+
+private:
+	bool _autoRecalc;
+
     QString _currentLocation {};
     QString _currentFormula {};
 };

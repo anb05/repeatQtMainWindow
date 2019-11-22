@@ -620,7 +620,7 @@ void MainWindow::connections()
 			this,          SLOT(updateStatusBar()));
 
 	connect(_pSpreadsheet, SIGNAL(modified()),
-			this,          SLOT(preadsheetModified()));
+			this,          SLOT(spreadsheetModified()));
 }
 
 } // namespace spr_sht
