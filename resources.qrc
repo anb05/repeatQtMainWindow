@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="copy">assets/copy.png</file>
+        <file alias="cut">assets/cut.png</file>
+        <file alias="find">assets/find.png</file>
+        <file alias="gotocell">assets/gotocell.png</file>
+        <file alias="icon">assets/icon.png</file>
+        <file alias="new">assets/new.png</file>
+        <file alias="open">assets/open.png</file>
+        <file alias="paste">assets/paste.png</file>
+        <file alias="save">assets/save.png</file>
+        <file alias="spl_scr">assets/spl_scr.jpg</file>
+    </qresource>
+</RCC>
