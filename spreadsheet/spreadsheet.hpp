@@ -21,8 +21,8 @@ public:
 public:
     const QString& currentLocation() {return _currentLocation;}
     const QString& currentFormula()  {return _currentFormula;}
-    bool  readFile(const QString& fileName) {return true;}
-    bool  writeFile(const QString& fileName) {return true;}
+	bool  readFile(const QString& fileName) {Q_UNUSED(fileName) return true;}
+	bool  writeFile(const QString& fileName){Q_UNUSED(fileName) return true;}
 
     QTableWidgetSelectionRange selectedRange() {return QTableWidgetSelectionRange();}
 
@@ -36,12 +36,13 @@ public slots:
     void selectCurrentRow(bool checked) {Q_UNUSED(checked)}
     void selectCurrentColumn(bool checked) {Q_UNUSED(checked)}
     void recalculate(bool checked) {Q_UNUSED(checked)}
-    void findNext(const QString& str, Qt::CaseSensitivity cs) {}
-    void findPrevious(const QString& str, Qt::CaseSensitivity cs) {}
+	void findNext(const QString& str, Qt::CaseSensitivity cs) {Q_UNUSED(str) Q_UNUSED(cs)}
+	void findPrevious(const QString& str, Qt::CaseSensitivity cs)  {Q_UNUSED(str) Q_UNUSED(cs)}
+	void performSort(bool isMore) {Q_UNUSED(isMore)} // Rebuild in the period ahead
 
 signals:
     void currentCellChanged(int, int, int, int);
-    void modified();
+	void modified();
 
 private:
     QString _currentLocation {};

@@ -138,6 +138,7 @@ void MainWindow::sort()
                           'A' + range.rightColumn());
 
     if (dialog.exec()) {
+		_pSpreadsheet->performSort(dialog.comparationObject());
     }
 }
 
@@ -591,14 +592,14 @@ void MainWindow::connections()
     connect(_pSpreadsheet, SIGNAL(currentCellChanged(int, int, int, int)),
             this,          SLOT(updateStatusBar()));
 
-    connect(_pSpreadsheet, SIGNAL(modified()),
-            this,          SLOT(preadsheetModified()));
+//	connect(_pSpreadsheet, SIGNAL(modified()),
+//			this,          SLOT(preadsheetModified()));
 
-    connect(_pFindDialog,  &FindDialog::findNext,
-            _pSpreadsheet, &Spreadsheet::findNext);
+//    connect(_pFindDialog,  &FindDialog::findNext,
+//            _pSpreadsheet, &Spreadsheet::findNext);
 
-    connect(_pFindDialog,  &FindDialog::findNext,
-            _pSpreadsheet, &Spreadsheet::findPrevious);
+//    connect(_pFindDialog,  &FindDialog::findNext,
+//            _pSpreadsheet, &Spreadsheet::findPrevious);
 }
 
 } // namespace spr_sht

@@ -28,6 +28,7 @@ namespace spr_sht {
 
         public:
             void setColumnRange(QChar first, QChar last);
+			bool comparationObject() {return true;} // Rebuild in the period ahead
 
         public slots:
             void on_changedAdvanced(bool state);

@@ -27,6 +27,9 @@ public:
     MainWindow& operator= (const MainWindow&) = delete;
     MainWindow& operator= (MainWindow&&)      = delete;
 
+public slots:
+	void spreadsheetModified();
+
 private:
     void closeEvent(QCloseEvent* event) override;
 
@@ -41,7 +44,6 @@ private slots:
 	void about();
 	void openRecentFile();
 	void updateStatusBar();
-	void spreadsheetModified();
 
 private:
 	void    createActions();
