@@ -20,6 +20,8 @@
 
 namespace spr_sht {
 
+QStringList  MainWindow::_recentFiles {};
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , _pSpreadsheet {new Spreadsheet}
@@ -36,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     setWindowIcon(QIcon(":/images/icon"));
     setCurrentFile("");
+
+	setAttribute(Qt::WA_DeleteOnClose);
 
     connections();
 }
@@ -65,7 +69,14 @@ void MainWindow::newFile()
 
     // для работы с несколькими окнами (добавить возможность удаления)
     MainWindow* mainWin = new MainWindow;
-    mainWin->show();
+
+	foreach (QWidget* w, QApplication::topLevelWidgets()) {
+		if (MainWindow* mainWin = qobject_cast<MainWindow*>(w)) {
+			mainWin->updateRecentFileActions();
+		}
+	}
+
+	mainWin->show();
 }
 
 void MainWindow::open()
@@ -118,6 +129,12 @@ void MainWindow::find()
     _pFindDialog->show();
     _pFindDialog->raise();
     _pFindDialog->activateWindow();
+
+	connect(_pFindDialog,  &FindDialog::findNext,
+			_pSpreadsheet, &Spreadsheet::findNext);
+
+	connect(_pFindDialog,  &FindDialog::findNext,
+			_pSpreadsheet, &Spreadsheet::findPrevious);
 }
 
 void MainWindow::goToCell()
@@ -214,7 +231,13 @@ void MainWindow::createActions()
                     this,    &MainWindow::openRecentFile);
         }
     }
-    {
+	{
+		pAction = _pCloseAction = new QAction(this);
+		pAction->setText(tr("&Close"));
+		pAction->setShortcut(QKeySequence::Close);
+		pAction->setStatusTip(tr("Close the window"));
+	}
+	{
         pAction = _pExitAction = new QAction(this);
         pAction->setText(tr("E&xit"));
         pAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
@@ -333,6 +356,7 @@ void MainWindow::createMenus()
             pMenu->addAction(_aRecentFileActions[cnt]);
         }
         pMenu->addSeparator();
+		pMenu->addAction(_pCloseAction);
         pMenu->addAction(_pExitAction);
     }
     {
@@ -415,7 +439,7 @@ void MainWindow::createStatusBar()
         pLbl->setAlignment(Qt::AlignLeft);
         statusBar()->addWidget(pLbl, 1);
     }
-    updateStatusBar();
+	updateStatusBar();
 }
 
 void MainWindow::readSettings()
@@ -541,10 +565,13 @@ void MainWindow::connections()
     connect(_pSaveAsAction, &QAction::triggered,
             this,           &MainWindow::saveAs);
 
-    connect(_pExitAction, &QAction::triggered,
-            this,         &MainWindow::close);
+	connect(_pCloseAction, &QAction::triggered,
+			this,          &MainWindow::close);
 
-    connect(_pSelectAllAction, &QAction::triggered,
+	connect(_pExitAction, &QAction::triggered,
+			qApp,         &QApplication::closeAllWindows);
+
+	connect(_pSelectAllAction, &QAction::triggered,
             _pSpreadsheet,     &Spreadsheet::selectAll);
 
     connect(_pShowGridAction, &QAction::toggled,
@@ -589,17 +616,11 @@ void MainWindow::connections()
     connect(_pAboutAction, &QAction::triggered,
             this,          &MainWindow::about);
 
-    connect(_pSpreadsheet, SIGNAL(currentCellChanged(int, int, int, int)),
-            this,          SLOT(updateStatusBar()));
+	connect(_pSpreadsheet, SIGNAL(currentCellChanged(int, int, int, int)),
+			this,          SLOT(updateStatusBar()));
 
-//	connect(_pSpreadsheet, SIGNAL(modified()),
-//			this,          SLOT(preadsheetModified()));
-
-//    connect(_pFindDialog,  &FindDialog::findNext,
-//            _pSpreadsheet, &Spreadsheet::findNext);
-
-//    connect(_pFindDialog,  &FindDialog::findNext,
-//            _pSpreadsheet, &Spreadsheet::findPrevious);
+	connect(_pSpreadsheet, SIGNAL(modified()),
+			this,          SLOT(preadsheetModified()));
 }
 
 } // namespace spr_sht

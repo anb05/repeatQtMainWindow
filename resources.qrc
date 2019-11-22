@@ -9,5 +9,6 @@
         <file alias="open">assets/open.png</file>
         <file alias="paste">assets/paste.png</file>
         <file alias="save">assets/save.png</file>
+        <file alias="spl_scr">assets/spl_scr.jpg</file>
     </qresource>
 </RCC>

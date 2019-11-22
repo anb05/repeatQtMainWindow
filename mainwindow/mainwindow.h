@@ -66,7 +66,7 @@ private:
     FindDialog*  _pFindDialog         {nullptr};
     QLabel*      _pLocationLbl        {nullptr};
     QLabel*      _pFormulaLbl         {nullptr};
-    QStringList  _recentFiles         {};
+	static QStringList  _recentFiles           ;
     QString      _curFile             {};
 
 	QMenu*       _pFileMenu           {nullptr};
@@ -84,6 +84,7 @@ private:
 	QAction*     _pOpenAction         {nullptr}; //
 	QAction*     _pSaveAction         {nullptr}; //
 	QAction*     _pSaveAsAction       {nullptr}; //
+	QAction*     _pCloseAction        {nullptr};
 	QAction*     _pExitAction         {nullptr}; //
 	QAction*     _pCutAction          {nullptr}; //
 	QAction*     _pCopyAction         {nullptr}; //
