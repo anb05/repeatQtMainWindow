@@ -36,20 +36,13 @@ public:
     void sort(const SpreadsheetCompare& compare);
 
 public slots:
-//    void cut();
-    void cut(bool checked);
-//    void copy();
-    void copy(bool checked);
-//    void paste();
-    void paste(bool checked);
-//    void del();
-    void del(bool checked);
-//    void selctCurrentRow();
-    void selectCurrentRow(bool checked);
-//    void selctCurrentColumn();
-    void selectCurrentColumn(bool checked);
-//    void recalculate();
-    void recalculate(bool checked);
+    void cut();
+    void copy();
+    void paste();
+    void del();
+    void selectCurrentRow();
+    void selectCurrentColumn();
+    void recalculate();
     void setAutoRecalculate(bool recalc);
     void findNext(const QString& str, Qt::CaseSensitivity cs);
     void findPrevious(const QString& str, Qt::CaseSensitivity cs);
@@ -64,7 +57,13 @@ public slots:
     void somethingChanged();
 
 private:
-    enum {MAGIC_NUMBER = 0x7f51c883, ROW_COUNT = 999, COLUMN_COUNT = 26};
+    enum
+    {
+        MAGIC_NUMBER = 0x7f51c883,
+        ROW_COUNT    = 999,
+        COLUMN_COUNT = 26
+    };
+
     Cell*   cell(int row, int column) const;
     QString text(int row, int column) const;
     QString formula(int row, int column) const;
