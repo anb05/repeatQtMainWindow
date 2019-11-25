@@ -12,22 +12,29 @@ public:
     Cell();
     ~Cell() override;
 
-    explicit Cell(const Cell& )    = delete ;
-    explicit Cell(Cell&& )         = delete ;
+	explicit Cell(const Cell& rhs);
+	explicit Cell(Cell&& rhs) = delete;
 
-    Cell& operator =(const Cell& ) = delete ;
-    Cell& operator =(Cell&& )      = delete ;
+	Cell& operator =(const Cell& rhs);
+	Cell& operator =(Cell&& rhs) = delete;
 
 public:
-    const QString& text()    const {return _text;}
-    const QString& formula() const {return _formula;}
-    void  setFormula(const QString& formula) {_formula = formula;}
-
+	QTableWidgetItem* clone() const override;
+	void setData(int role, const QVariant& value) override;
+	QVariant data(int role) const override;
+	void setFormula(const QString& formula);
+	QString formula() const;
+	void setDirty();
 
 private:
-    QString _text    {};
-    QString _formula {};
+	QVariant value() const;
+	QVariant evalExpression(const QString& str, int& pos) const;
+	QVariant evalTerm(const QString& str, int& pos) const;
+	QVariant evalFactor(const QString& str, int& pos) const;
 
+private:
+	mutable QVariant _cachedValue {};
+	mutable bool     _cacheIsDirty  ;
 };
 
 } // namespace spr_sht
