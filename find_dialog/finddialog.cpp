@@ -94,7 +94,6 @@ void FindDialog::findClicked()
     else {
         emit findNext(_pEdtFind->text(), cs);
     }
-    printf("%s\n", _pEdtFind->text().toStdString().c_str());
 }
 
 void FindDialog::enableFindButton(const QString &text)

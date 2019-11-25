@@ -5,9 +5,16 @@
 #include <QTableWidget>
 
 namespace spr_sht {
+class Cell;
+class SpreadsheetCompare;
+} // namespace spr_sht
+
+namespace spr_sht {
 
 class Spreadsheet : public QTableWidget
 {
+    Q_OBJECT
+
 public:
     explicit Spreadsheet(QWidget* parent = nullptr);
     ~Spreadsheet() override;
@@ -19,34 +26,62 @@ public:
     Spreadsheet& operator= (Spreadsheet&& )      = delete ;
 
 public:
-    const QString& currentLocation() {return _currentLocation;}
-    const QString& currentFormula()  {return _currentFormula;}
-	bool  readFile(const QString& fileName) {Q_UNUSED(fileName) return true;}
-	bool  writeFile(const QString& fileName){Q_UNUSED(fileName) return true;}
-
-    QTableWidgetSelectionRange selectedRange() {return QTableWidgetSelectionRange();}
+    bool autoRecalculate() {return _autoRecalc;}
+    QString currentLocation() const;
+    QString currentFormula() const;
+    QTableWidgetSelectionRange selectedRange() const;
+    void clear();
+    bool readFile(const QString& fileName);
+    bool writeFile(const QString& fileName);
+    void sort(const SpreadsheetCompare& compare);
 
 public slots:
-    bool autoRecalculate() {return true;}
-    void setAutoRecalculate(bool b) {Q_UNUSED(b)}
-    void cut(bool checked) {Q_UNUSED(checked)}
-    void copy(bool checked) {Q_UNUSED(checked)}
-    void paste(bool checked) {Q_UNUSED(checked)}
-    void del(bool checked) {Q_UNUSED(checked)}
-    void selectCurrentRow(bool checked) {Q_UNUSED(checked)}
-    void selectCurrentColumn(bool checked) {Q_UNUSED(checked)}
-    void recalculate(bool checked) {Q_UNUSED(checked)}
-	void findNext(const QString& str, Qt::CaseSensitivity cs) {Q_UNUSED(str) Q_UNUSED(cs)}
-	void findPrevious(const QString& str, Qt::CaseSensitivity cs)  {Q_UNUSED(str) Q_UNUSED(cs)}
-	void performSort(bool isMore) {Q_UNUSED(isMore)} // Rebuild in the period ahead
+    void cut();
+    void copy();
+    void paste();
+    void del();
+    void selectCurrentRow();
+    void selectCurrentColumn();
+    void recalculate();
+    void setAutoRecalculate(bool recalc);
+    void findNext(const QString& str, Qt::CaseSensitivity cs);
+    void findPrevious(const QString& str, Qt::CaseSensitivity cs);
+
+    /**/
+    void performSort(bool isMore) {Q_UNUSED(isMore)} // Rebuild in the period ahead
 
 signals:
-    void currentCellChanged(int, int, int, int);
-	void modified();
+    void modified();
+
+public slots:
+    void somethingChanged();
 
 private:
-    QString _currentLocation {};
-    QString _currentFormula {};
+    enum
+    {
+        MAGIC_NUMBER = 0x7f51c883,
+        ROW_COUNT    = 999,
+        COLUMN_COUNT = 26
+    };
+
+    Cell*   cell(int row, int column) const;
+    QString text(int row, int column) const;
+    QString formula(int row, int column) const;
+    void    setFormula(int row, int column, const QString& formula);
+
+private:
+    bool _autoRecalc;
+};
+
+class SpreadsheetCompare
+{
+public:
+    bool operator()(const QStringList &row1,
+                    const QStringList &row2) const;
+
+    enum { KeyCount = 3 };
+    int keys[KeyCount];
+    bool ascending[KeyCount];
 };
 
 } // namespace spr_sht
